@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sunset Shots — RSVP Confirmed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Montserrat:wght@400;500;600;700&family=Bevan&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --plum:#2E1442;
+    --plum-deep:#210E32;
+    --plum-soft:#4A2A5E;
+    --cream-glow:#FFEAC1;
+    --cream:#E9D6AE;
+    --gold:#D2BC97;
+    --gold-bright:#F0DCAE;
+    --white:#FFFFFF;
+    --asphalt:#705F4D;
+    --hair:rgba(210,188,151,0.30);
+
+    --display:'Cooper Black','Cooper Std','Cooper BT','Bevan',Georgia,serif;
+    --accent:'Playfair Display',Georgia,serif;
+    --body:'Montserrat',system-ui,sans-serif;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{min-height:100%;}
+  body{
+    font-family:var(--body); color:var(--plum);
+    background:var(--cream); min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+    padding:26px 16px 56px; position:relative; overflow-x:hidden;
+  }
+
+  .scene{
+    position:fixed; inset:0; z-index:0;
+    background:
+      radial-gradient(circle at 12% 6%, var(--cream-glow) 0%, rgba(255,234,193,0) 46%),
+      linear-gradient(180deg, var(--cream-glow) 0%, var(--cream) 42%, var(--gold) 100%);
+  }
+  .horizon{position:fixed; left:0; right:0; top:63%; height:1px; z-index:0;
+    background:linear-gradient(90deg,transparent,rgba(112,95,77,0.35),transparent);}
+
+  .picker-wrap{position:relative; z-index:2; width:100%; max-width:430px; margin-bottom:22px;}
+  .picker-label{font-family:var(--body); font-size:10px; font-weight:600;
+    letter-spacing:0.28em; text-transform:uppercase; color:var(--asphalt);
+    margin-bottom:8px; text-align:center;}
+  select{
+    width:100%; background:rgba(255,255,255,0.55); border:1px solid var(--hair);
+    color:var(--plum); font-family:var(--body); font-weight:600; font-size:15px;
+    padding:12px 40px 12px 14px; border-radius:10px; appearance:none; -webkit-appearance:none;
+    background-image:linear-gradient(45deg,transparent 50%,var(--plum) 50%),linear-gradient(135deg,var(--plum) 50%,transparent 50%);
+    background-position:calc(100% - 20px) center,calc(100% - 14px) center;
+    background-size:6px 6px,6px 6px; background-repeat:no-repeat;
+  }
+  select:focus{outline:2px solid var(--plum); outline-offset:2px;}
+
+  .wrap{position:relative; z-index:2; width:100%; max-width:430px;}
+
+  .eyebrow{text-align:center; font-family:var(--accent); font-weight:700;
+    font-size:13px; letter-spacing:0.42em; text-transform:uppercase;
+    color:var(--plum); margin-bottom:16px; padding-left:0.42em;}
+
+  .ticket{
+    position:relative; text-align:center;
+    background:linear-gradient(158deg,var(--plum-soft) 0%,var(--plum) 40%,var(--plum-deep) 100%);
+    border:1px solid var(--hair); border-radius:20px; padding:34px 30px 30px;
+    box-shadow:0 34px 70px -26px rgba(46,20,66,0.6), inset 0 1px 0 rgba(255,234,193,0.06);
+    overflow:hidden;
+  }
+  .ticket::before{content:''; position:absolute; top:-40%; left:-20%; width:70%; height:80%;
+    background:radial-gradient(circle,rgba(255,234,193,0.16),transparent 68%); pointer-events:none;}
+  .ticket > *{position:relative;}
+
+  .status{display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--body); font-weight:600; font-size:11px;
+    letter-spacing:0.16em; text-transform:uppercase; color:var(--gold-bright);
+    background:rgba(210,188,151,0.12); border:1px solid rgba(210,188,151,0.35);
+    padding:6px 15px; border-radius:100px; margin-bottom:22px;}
+  .status::before{content:''; width:6px; height:6px; border-radius:50%;
+    background:var(--gold-bright); box-shadow:0 0 8px var(--gold-bright);}
+
+  .event-name{font-family:var(--accent); font-weight:700; font-size:13px;
+    letter-spacing:0.34em; text-transform:uppercase; color:var(--gold);
+    margin-bottom:4px; padding-left:0.34em;}
+
+  /* one-line auto-fit + sunset gradient fill */
+  .guest-name{
+    font-family:var(--display); font-weight:400;
+    font-size:60px; line-height:0.98; letter-spacing:0.005em;
+    white-space:nowrap; margin:10px 0 24px;
+    background:linear-gradient(178deg,#FFF3D6 0%,#FFC978 34%,#FF9E6D 64%,#FF7EA8 100%);
+    -webkit-background-clip:text; background-clip:text;
+    color:transparent; -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 5px 16px rgba(33,14,50,0.45));
+  }
+  @supports not ((-webkit-background-clip:text) or (background-clip:text)){
+    .guest-name{color:var(--white); -webkit-text-fill-color:var(--white); background:none;}
+  }
+
+  .divider{display:flex; align-items:center; gap:10px; margin:0 0 22px;}
+  .divider .rule{flex:1; height:1px; background:var(--hair);}
+  .divider .dot{width:5px; height:5px; border-radius:50%; background:var(--gold);}
+
+  .details{display:grid; grid-template-columns:1fr 1fr; gap:18px 16px; text-align:left;}
+  .detail-label{font-family:var(--body); font-weight:600; font-size:10px;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:5px;}
+  .detail-value{font-family:var(--body); font-weight:600; font-size:16px; color:var(--white);}
+  .detail-value span{display:block; font-weight:400; font-size:12px; color:rgba(255,255,255,0.55); margin-top:2px;}
+
+  .plate{margin-top:26px; display:inline-block; font-family:var(--body); font-weight:700;
+    font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--plum);
+    background:var(--gold); padding:9px 18px; border-radius:7px;}
+
+  .perf{position:absolute; left:-1px; right:-1px; top:126px; height:0; border-top:2px dashed rgba(210,188,151,0.30);}
+  .notch{position:absolute; top:117px; width:22px; height:22px; border-radius:50%;
+    background:var(--cream); border:1px solid var(--hair);}
+  .notch.left{left:-12px;} .notch.right{right:-12px;}
+
+  .brandline{margin-top:22px; display:flex; align-items:center; justify-content:center; gap:12px;}
+  .brandline .rule{width:34px; height:1px; background:var(--hair);}
+  .vs{font-family:var(--display); font-weight:400; font-size:20px; letter-spacing:0.02em; color:#000000;}
+
+  footer{text-align:center; margin-top:14px; font-family:var(--body); font-weight:500;
+    font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--asphalt);}
+
+  .not-found .guest-name{background:none; color:var(--gold-bright);
+    -webkit-text-fill-color:var(--gold-bright); filter:none;}
+  .not-found .status{color:var(--gold); background:rgba(255,255,255,0.06); border-color:rgba(210,188,151,0.25);}
+  .not-found .status::before{background:var(--gold); box-shadow:none;}
+</style>
+</head>
+<body>
+
+<div class="scene"></div>
+<div class="horizon"></div>
+
+<div class="picker-wrap">
+  <div class="picker-label">Preview as guest</div>
+  <select id="guestPicker"></select>
+</div>
+
+<div class="wrap">
+  <div class="eyebrow">Varsity Stance</div>
+
+  <div class="ticket" id="ticket">
+    <div class="notch left"></div>
+    <div class="notch right"></div>
+    <div class="perf"></div>
+
+    <div class="status" id="status">RSVP confirmed</div>
+    <div class="event-name">Sunset Shots</div>
+    <div class="guest-name" id="guestName">—</div>
+
+    <div class="divider"><div class="rule"></div><div class="dot"></div><div class="rule"></div></div>
+
+    <div class="details" id="detailsBlock">
+      <div><div class="detail-label">Date</div><div class="detail-value">Sat, 8 Aug</div></div>
+      <div><div class="detail-label">Gates</div><div class="detail-value">11:00 AM</div></div>
+      <div style="grid-column:1 / -1;">
+        <div class="detail-label">Location</div>
+        <div class="detail-value">The Wilds<span>Houghton, Johannesburg</span></div>
+      </div>
+    </div>
+
+    <div class="plate" id="plateId">VS · GUEST</div>
+  </div>
+
+  <div class="brandline"><div class="rule"></div><div class="vs">VS</div><div class="rule"></div></div>
+  <footer>Screenshot this as your entry pass</footer>
+</div>
+
+<script>
+  const GUESTS = {
+    "fmanana":"Fmanana","boboza":"Boboza","zipo":"Zipo","no-plate":"No Plate",
+    "mk":"MK","x0-rose-plus1":"X0_rose +1","backpack-vitz":"That \u{1F392}ed Toyota Vitz",
+    "sir-mondaynight":"Sir_mondaynight","onsightclive":"Onsightclive",
+    "koolkid-tbang":"Koolkid_tbang","buxhi":"Buxhi.co.za","jb-visuals":"Jb.visuals_za",
+    "mac":"Mac","papers":"Papers","katlego":"Katlego","zealous-void":"Zealous_void",
+    "grandpa-benz":"Grandpa Benz","tumza":"Tumza"
+  };
+
+  const picker=document.getElementById('guestPicker');
+  const pickerWrap=document.querySelector('.picker-wrap');
+  const ticket=document.getElementById('ticket');
+  const nameEl=document.getElementById('guestName');
+  const statusEl=document.getElementById('status');
+  const plateEl=document.getElementById('plateId');
+  const detailsBlock=document.getElementById('detailsBlock');
+
+  const broken=document.createElement('option');
+  broken.value="__invalid__"; broken.textContent="(broken / wrong link)";
+  picker.appendChild(broken);
+  Object.entries(GUESTS).forEach(([slug,name])=>{
+    const o=document.createElement('option'); o.value=slug; o.textContent=name; picker.appendChild(o);
+  });
+
+  const MAX=60, MIN=16;
+  function fitName(){
+    nameEl.style.whiteSpace='nowrap';
+    let size=MAX, guard=0;
+    nameEl.style.fontSize=size+'px';
+    while(nameEl.scrollWidth>nameEl.clientWidth && size>MIN && guard<80){
+      size-=1; nameEl.style.fontSize=size+'px'; guard++;
+    }
+  }
+
+  function render(slug){
+    const name=GUESTS[slug];
+    if(name){
+      ticket.classList.remove('not-found');
+      statusEl.textContent="RSVP confirmed";
+      nameEl.textContent=name;
+      plateEl.textContent="VS \u00B7 "+slug.toUpperCase();
+      detailsBlock.style.display='grid';
+      plateEl.style.display='inline-block';
+    }else{
+      ticket.classList.add('not-found');
+      statusEl.textContent="Link not on the list";
+      nameEl.textContent="Check your link";
+      detailsBlock.style.display='none';
+      plateEl.style.display='none';
+    }
+    fitName();
+  }
+
+  picker.addEventListener('change',()=>render(picker.value));
+  window.addEventListener('resize',fitName);
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(fitName); }
+
+  // Per-guest link: index.html?g=<slug>. No param = preview mode with picker.
+  const g=new URLSearchParams(location.search).get('g');
+  if(g!==null){
+    pickerWrap.style.display='none';
+    render(g);
+  }else{
+    picker.value="katlego";
+    render("katlego");
+  }
+</script>
+
+</body>
+</html>
